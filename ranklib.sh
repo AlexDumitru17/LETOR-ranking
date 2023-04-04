@@ -1,0 +1,1 @@
+java -jar bin/RankLib-2.18.jar
