@@ -6,8 +6,7 @@ ranker_configs = {
     1: {'epoch': 50, 'lr': 0.001, 'node': 5},  # RankNet
     4: {'r': 3, 'i': 20},  # Coordinate Ascent
     5: {'epoch': 50, 'lr': 0.001, 'node': 5}, # LambdaRank
-    # 6: {'tree': 300, 'leaf': 10},  # LambdaMART
-    # Other rankers can use default parameters
+
 }
 def train_ranklib_model(training_data, model_output, model_type, metric, validation_data, ranker_config):
     ranklib_jar = "RankLib-2.18.jar"
@@ -29,9 +28,9 @@ def test_ranklib_model(model_to_load, test_data, metric):
     command = f"java -jar {ranklib_jar} -load {model_to_load}  -test {test_data} -metric2T {metric}"
     print(f"Executing command: {command}")
 
-    # with subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True) as process:
-    #     for line in process.stdout:
-    #         print(line.strip())
+    with subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True) as process:
+        for line in process.stdout:
+            print(line.strip())
 
     return_code = process.wait()
     if return_code != 0:
@@ -51,12 +50,3 @@ if __name__ == "__main__":
                 model_output = f"models/Model{model_nr}Metric{metric}Fold{fold_nr}"
                 ranker_config = ranker_configs.get(model_nr, {})
                 executor.submit(train_ranklib_model, training_data, model_output, model_nr, metric, vali_data, ranker_config)
-    # training_data = "data/mslr_web/Fold1/train.txt"
-    # test_data = "data/mslr_web/Fold1/test.txt"
-    # vali_data = "data/mslr_web/Fold1/vali.txt"
-    # model_output = "models/testModel.txt"
-    #
-    # model_type = 3  # For example, use RankNet
-    # metric = "NDCG@10"
-
-    # train_ranklib_model(training_data, model_output, model_type, metric, vali_data)
